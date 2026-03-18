@@ -174,18 +174,18 @@ Contoh:
   }
 
   return (
-    <motion.div key="novel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`w-full bg-slate-950/80 backdrop-blur-xl border-2 ${theme.border} rounded-3xl p-8 relative shadow-2xl`}>
-      <div className={`absolute -top-5 left-10 ${theme.bg} px-6 py-2 rounded-xl font-bold uppercase text-xs tracking-widest text-white transition-colors duration-500`}>
+    <motion.div key="novel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className={`w-full max-w-[92vw] sm:max-w-none mx-auto bg-slate-950/80 backdrop-blur-xl border-2 ${theme.border} rounded-2xl sm:rounded-3xl p-5 sm:p-8 relative shadow-2xl`}>
+      <div className={`absolute -top-4 sm:-top-5 left-6 sm:left-10 ${theme.bg} px-4 sm:px-6 py-1.5 sm:py-2 rounded-xl font-bold uppercase text-[10px] sm:text-xs tracking-widest text-white transition-colors duration-500 shadow-md`}>
         {isLoading ? 'Seila sedang mengetik...' : (current.text.startsWith(`*${playerName} memberikan`) ? 'Sistem' : current.sender === playerName ? 'Kamu' : current.sender)}
       </div>
-      <div className="min-h-[100px] mb-6">
-        <p className={`text-2xl font-medium leading-relaxed ${current.text.startsWith(`*${playerName} memberikan`) ? 'text-amber-300 italic text-center text-lg' : 'text-white'}`}>
+      <div className="min-h-[80px] sm:min-h-[100px] mb-4 sm:mb-6 mt-2 sm:mt-0">
+        <p className={`text-lg sm:text-2xl font-medium leading-relaxed ${current.text.startsWith(`*${playerName} memberikan`) ? 'text-amber-300 italic text-center text-base sm:text-lg' : 'text-white'}`}>
           {isLoading ? '...' : current.text}
         </p>
       </div>
-      <form onSubmit={handleSend} className="flex gap-3">
-        <input type="text" value={input} onChange={(e)=>setInput(e.target.value)} className="flex-1 bg-white/5 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:border-white/20 text-white" placeholder="Tanggapi Seila..." disabled={isLoading} />
-        <button type="submit" className={`${theme.bg} p-4 rounded-2xl text-white`} disabled={isLoading}><Send size={24}/></button>
+      <form onSubmit={handleSend} className="flex gap-2 sm:gap-3 w-full items-center">
+        <input type="text" value={input} onChange={(e)=>setInput(e.target.value)} className="flex-1 min-w-0 bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-4 sm:px-6 py-3 sm:py-4 outline-none focus:border-white/20 text-white text-sm sm:text-base transition-colors" placeholder="Tanggapi Seila..." disabled={isLoading} />
+        <button type="submit" className={`${theme.bg} p-3 sm:p-4 rounded-xl sm:rounded-2xl text-white shrink-0 shadow-lg hover:scale-105 transition-transform active:scale-95 flex items-center justify-center`} disabled={isLoading}><Send size={20} className="sm:w-6 sm:h-6" /></button>
       </form>
     </motion.div>
   );

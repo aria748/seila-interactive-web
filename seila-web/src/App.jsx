@@ -60,6 +60,9 @@ export default function App() {
   const bgmRef = useRef(null);
   const sfxClick = useRef(null);
   const sfxPop = useRef(null);
+  const sfxSuccess = useRef(null);
+  const sfxCoin = useRef(null);
+  const sfxWriting = useRef(null);
 
   // LOGIKA SAVE & LOAD PROGRESS
   useEffect(() => {
@@ -101,7 +104,13 @@ export default function App() {
   };
 
   useEffect(() => {
-    bgmRef.current = new Audio('/bgm.mp3'); sfxClick.current = new Audio('/click.mp3'); sfxPop.current = new Audio('/pop.mp3');
+    bgmRef.current = new Audio('/bgm.mp3'); 
+    sfxClick.current = new Audio('/click.mp3'); 
+    sfxPop.current = new Audio('/pop.mp3');
+    sfxSuccess.current = new Audio('/success.mp3');
+    sfxCoin.current = new Audio('/coin.mp3');
+    sfxWriting.current = new Audio('/writing.mp3');
+
     bgmRef.current.loop = true; bgmRef.current.volume = 0.3; 
     return () => { if (bgmRef.current) { bgmRef.current.pause(); bgmRef.current.src = ""; } };
   }, []);
@@ -122,7 +131,13 @@ export default function App() {
   
   const playSound = (soundName) => { 
     if (isMuted) return; 
-    const audio = soundName === 'click' ? sfxClick.current : sfxPop.current; 
+    let audio;
+    if (soundName === 'click') audio = sfxClick.current;
+    else if (soundName === 'pop') audio = sfxPop.current;
+    else if (soundName === 'success') audio = sfxSuccess.current;
+    else if (soundName === 'coin') audio = sfxCoin.current;
+    else if (soundName === 'writing') audio = sfxWriting.current;
+    
     if (audio) { audio.currentTime = 0; audio.volume = 0.5; audio.play().catch(e => console.log("SFX tertahan:", e)); } 
   };
 
@@ -134,7 +149,7 @@ export default function App() {
 
   const buyItem = (item) => {
     if (coins >= item.price) {
-      playSound('pop'); setCoins(c => c - item.price);
+      playSound('coin'); setCoins(c => c - item.price);
       setInventory(prev => [...prev, { ...item, uniqueId: Date.now() + Math.random() }]);
     }
   };
@@ -148,7 +163,7 @@ export default function App() {
     closeAllModals(); 
   };
 
-const handleNewDiaryEntry = (diaryText) => {
+  const handleNewDiaryEntry = (diaryText) => {
     setDiaryEntries(prev => {
       const nextId = prev.length + 1;
       
@@ -194,7 +209,7 @@ const handleNewDiaryEntry = (diaryText) => {
     lastPos.current = currentPos; hue.current += 4;
     setDrawProgress(prev => {
       const next = prev + 0.5;
-      if (next >= 100 && prev < 100) { setTimeout(() => { setMoodScore(m => Math.min(100, m + 2)); setCoins(c => c + 20); playSound('pop'); setActiveGame('canvas-win'); }, 300); }
+      if (next >= 100 && prev < 100) { setTimeout(() => { setMoodScore(m => Math.min(100, m + 2)); setCoins(c => c + 20); playSound('success'); setActiveGame('canvas-win'); }, 300); }
       return next;
     });
   };
@@ -220,7 +235,7 @@ const handleNewDiaryEntry = (diaryText) => {
 
   useEffect(() => {
     if (activeGame === 'memory' && solved.length === cards.length && cards.length > 0) {
-      setTimeout(() => { setMoodScore(m => Math.min(100, m + 5)); setCoins(c => c + 30); playSound('pop'); setActiveGame('memory-win'); }, 600);
+      setTimeout(() => { setMoodScore(m => Math.min(100, m + 5)); setCoins(c => c + 30); playSound('success'); setActiveGame('memory-win'); }, 600);
     }
   }, [solved, activeGame, cards.length]);
 
@@ -335,7 +350,7 @@ const handleNewDiaryEntry = (diaryText) => {
                         <div className="flex overflow-x-auto gap-2 p-3 sm:p-4 border-b border-slate-800 bg-slate-950/50 shrink-0 custom-scrollbar pr-16 sm:pr-4">
                           <button onClick={() => { playSound('click'); setHubTab('profile'); }} className={`px-4 py-2 sm:py-3 rounded-xl flex items-center gap-2 font-bold text-sm sm:text-base whitespace-nowrap transition-colors ${hubTab === 'profile' ? theme.bg : 'bg-slate-800 text-slate-400 hover:text-white'}`}><User size={18}/> Profil</button>
                           <button onClick={() => { playSound('click'); setHubTab('shop'); }} className={`px-4 py-2 sm:py-3 rounded-xl flex items-center gap-2 font-bold text-sm sm:text-base whitespace-nowrap transition-colors ${hubTab === 'shop' ? theme.bg : 'bg-slate-800 text-slate-400 hover:text-white'}`}><ShoppingBag size={18}/> Toko & Tas</button>
-                          <button onClick={() => { playSound('click'); setHubTab('diary'); setHasNewDiary(false); }} className={`px-4 py-2 sm:py-3 rounded-xl flex items-center gap-2 font-bold text-sm sm:text-base whitespace-nowrap transition-colors relative ${hubTab === 'diary' ? theme.bg : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
+                          <button onClick={() => { playSound('writing'); setHubTab('diary'); setHasNewDiary(false); }} className={`px-4 py-2 sm:py-3 rounded-xl flex items-center gap-2 font-bold text-sm sm:text-base whitespace-nowrap transition-colors relative ${hubTab === 'diary' ? theme.bg : 'bg-slate-800 text-slate-400 hover:text-white'}`}>
                             <BookHeart size={18}/> Catatan
                             {hasNewDiary && <span className="absolute top-2 right-2 flex h-2.5 w-2.5 rounded-full bg-rose-500"></span>}
                           </button>
