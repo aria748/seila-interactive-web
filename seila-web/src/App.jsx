@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings, Shirt, Volume2, VolumeX, Palette, X, Smartphone, Monitor, ArrowLeft, Gamepad2, Sparkles, User, Calendar, Coffee, Music, Paintbrush, Heart, Smile, BookHeart, Lock, Check, ShoppingBag, Coins as CoinIcon, Gift, LayoutGrid } from 'lucide-react';
+import { Settings, Shirt, Volume2, VolumeX, Palette, X, Smartphone, Monitor, ArrowLeft, Gamepad2, Sparkles, User, Calendar, Coffee, Music, Paintbrush, Heart, Smile, BookHeart, Lock, Check, ShoppingBag, Coins as CoinIcon, Gift, LayoutGrid, ChevronLeft, ChevronRight } from 'lucide-react';
 import ChatBox from './components/ChatBox';
 
 const themeColors = {
@@ -43,6 +43,15 @@ export default function App() {
   const [giftEvent, setGiftEvent] = useState(null); 
   const [hasNewDiary, setHasNewDiary] = useState(false); 
   const [diaryEntries, setDiaryEntries] = useState([]);
+
+  // Daftar Playlist Musik Seila (Aesthetic Tunes)
+const seilaPlaylist = [
+  { id: 0, name: 'Campus Days', file: '/bgm/kampus.mp3', icon: '🏫' },
+  { id: 1, name: 'Lo-fi Chill', file: '/bgm/chill.mp3', icon: '☕' },
+  { id: 2, name: 'Fantasy RPG', file: '/bgm/rpg.mp3', icon: '⚔️' },
+];
+// State untuk menyimpan indeks lagu yang sedang diputar
+const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
 
   // MINI GAME STATES
   const [activeGame, setActiveGame] = useState('menu'); 
@@ -104,16 +113,18 @@ export default function App() {
   };
 
   useEffect(() => {
-    bgmRef.current = new Audio('/bgm.mp3'); 
+    const initialTrack = seilaPlaylist[currentTrackIndex].file;
+  bgmRef.current = new Audio(initialTrack);
     sfxClick.current = new Audio('/click.mp3'); 
     sfxPop.current = new Audio('/pop.mp3');
     sfxSuccess.current = new Audio('/success.mp3');
     sfxCoin.current = new Audio('/coin.mp3');
     sfxWriting.current = new Audio('/writing.mp3');
 
-    bgmRef.current.loop = true; bgmRef.current.volume = 0.3; 
-    return () => { if (bgmRef.current) { bgmRef.current.pause(); bgmRef.current.src = ""; } };
-  }, []);
+    bgmRef.current.loop = true; 
+  bgmRef.current.volume = 0.2; // Sedikit diturunkan agar tidak menutupi SFX
+  return () => { if (bgmRef.current) { bgmRef.current.pause(); bgmRef.current.src = ""; } };
+}, []);
 
   useEffect(() => { if (bgmRef.current) bgmRef.current.muted = isMuted; }, [isMuted]);
 
@@ -238,6 +249,28 @@ export default function App() {
       setTimeout(() => { setMoodScore(m => Math.min(100, m + 5)); setCoins(c => c + 30); playSound('success'); setActiveGame('memory-win'); }, 600);
     }
   }, [solved, activeGame, cards.length]);
+
+const handleChangeTrack = (direction) => {
+  playSound('click'); // SFX saat tombol ditekan
+
+  setCurrentTrackIndex(prevIndex => {
+    let nextIndex = prevIndex + direction;
+    // Logika agar playlist berputar (jika sudah di akhir, kembali ke awal)
+    if (nextIndex >= seilaPlaylist.length) nextIndex = 0;
+    if (nextIndex < 0) nextIndex = seilaPlaylist.length - 1;
+
+    // Putar lagu baru
+    if (bgmRef.current) {
+      bgmRef.current.pause();
+      bgmRef.current.src = seilaPlaylist[nextIndex].file;
+      bgmRef.current.load();
+      if (isPlaying && !isMuted) {
+        bgmRef.current.play().catch(e => console.log("BGM tertahan:", e));
+      }
+    }
+    return nextIndex;
+  });
+};
 
   const isAnyOverlayOpen = isHubOpen;
   const staggerContainer = { hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.1 } } };
@@ -510,7 +543,54 @@ export default function App() {
                         <div className="space-y-8 pb-8">
                           <div><h3 className="text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2"><Monitor size={14}/> Mode Interaksi</h3><div className="grid grid-cols-2 gap-2"><button onClick={() => { playSound('click'); setViewMode('novel'); }} className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${viewMode === 'novel' ? `${theme.bg} border-transparent shadow-lg` : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}`}><Monitor size={18} /> <span className="text-[10px] uppercase tracking-wider font-bold">Visual Novel</span></button><button onClick={() => { playSound('click'); setViewMode('chat'); }} className={`p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${viewMode === 'chat' ? `${theme.bg} border-transparent shadow-lg` : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}`}><Smartphone size={18} /> <span className="text-[10px] uppercase tracking-wider font-bold">Chat HP</span></button></div></div>
                           <div><h3 className="text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2"><Palette size={14}/> Tema Warna</h3><div className="grid grid-cols-2 gap-2 mb-3">{[{ id: 'indigo', name: 'Biru' }, { id: 'rose', name: 'Merah' }, { id: 'emerald', name: 'Hijau' }, { id: 'amber', name: 'Emas' }].map((color) => (<button key={color.id} onClick={() => { playSound('click'); setUiColor(color.id); }} className={`p-2 rounded-xl border flex justify-center text-xs font-bold transition-all ${uiColor === color.id ? `${themeColors[color.id].bg} border-transparent shadow-lg text-white` : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}`}>{color.name}</button>))}</div><div className={`flex items-center justify-between p-3 rounded-xl border transition-all ${uiColor === 'custom' ? 'bg-white/10 border-white/30 shadow-lg' : 'bg-white/5 border-white/10'}`}><span className="text-xs font-bold text-slate-300">Warna Kustom</span><div className="relative w-8 h-8 rounded overflow-hidden cursor-pointer shadow-md border border-white/20"><input type="color" value={customHex} onChange={(e) => { setCustomHex(e.target.value); setUiColor('custom'); }} onClick={() => playSound('click')} className="absolute top-[-10px] left-[-10px] w-[50px] h-[50px] cursor-pointer" /></div></div></div>
-                          <div><h3 className="text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2"><Volume2 size={14}/> Audio</h3><button onClick={() => { playSound('click'); setIsMuted(!isMuted); }} className={`w-full p-4 rounded-xl border flex justify-between items-center transition-all ${!isMuted ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/20 border-rose-500/30 text-rose-400'}`}><span className="font-bold text-sm">{isMuted ? 'Muted' : 'Sound On'}</span> {isMuted ? <VolumeX size={18}/> : <Volume2 size={18}/>}</button></div>
+                          <div><h3 className="text-xs font-bold text-slate-500 mb-4 uppercase tracking-widest flex items-center gap-2"><Volume2 size={14}/> Audio</h3>
+                          
+                          <div className="bg-slate-950/60 border-2 border-slate-700 p-5 rounded-3xl flex flex-col items-center gap-4 shadow-inner relative overflow-hidden">
+  <div className={`absolute -top-10 -right-10 w-24 h-24 ${theme.bg} rounded-full blur-[60px] opacity-50`}></div>
+
+  <motion.div 
+    animate={isPlaying && !isMuted ? { rotate: 360 } : { rotate: 0 }}
+    transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+    className={`relative w-28 h-28 rounded-full bg-slate-950 border-4 border-slate-800 shadow-2xl flex items-center justify-center group cursor-pointer`}
+    onClick={() => { playSound('click'); setIsMuted(!isMuted); }}
+  >
+    <div className="absolute inset-2 rounded-full border border-slate-700/50"></div>
+    <div className="absolute inset-5 rounded-full border border-slate-700/30"></div>
+    
+    <div className={`w-12 h-12 rounded-full ${theme.bg} border-2 border-slate-950 overflow-hidden shadow-md flex items-center justify-center z-10`}>
+      <img src="/seila-kasual.png" alt="Seila Disc" className="w-full h-full object-cover scale-150 object-top" onError={(e)=>e.target.src='/seila.png'}/>
+    </div>
+
+    <div className="absolute inset-0 bg-slate-950/70 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity z-20">
+      {isMuted ? <VolumeX size={24} className="text-rose-400"/> : <Volume2 size={24} className="text-emerald-400"/>}
+    </div>
+  </motion.div>
+
+  <div className="w-full text-center z-10 mt-1">
+    <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">Seila's Tunes</p>
+    <AnimatePresence mode="wait">
+      <motion.p 
+        key={currentTrackIndex}
+        initial={{ opacity: 0, y: 5 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -5 }}
+        className="font-black text-sm text-white flex items-center justify-center gap-2 mb-4"
+      >
+        <span>{seilaPlaylist[currentTrackIndex].icon}</span>
+        {seilaPlaylist[currentTrackIndex].name}
+      </motion.p>
+    </AnimatePresence>
+
+    <div className="flex gap-2 justify-center">
+      <motion.button whileHover={{scale:1.1}} whileTap={{scale:0.9}} onClick={()=>handleChangeTrack(-1)} className="p-2.5 bg-slate-800 rounded-xl border border-white/10 hover:bg-slate-700">
+        <ChevronLeft size={18} className="text-slate-300"/>
+      </motion.button>
+      <motion.button whileHover={{scale:1.1}} whileTap={{scale:0.9}} onClick={()=>handleChangeTrack(1)} className="p-2.5 bg-slate-800 rounded-xl border border-white/10 hover:bg-slate-700">
+        <ChevronRight size={18} className="text-slate-300"/>
+      </motion.button>
+    </div>
+  </div>
+</div></div>
                         </div>
                       )}
                       {activeTab === 'dress' && (

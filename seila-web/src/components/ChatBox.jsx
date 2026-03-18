@@ -80,38 +80,38 @@ Contoh:
       let responseText = data.choices[0].message.content;
 
       // --- LOGIKA VOICE ELEVENLABS DIMULAI ---
-      const speak = async (text) => {
-        // Jangan bersuara kalau lagi mute
-        if (isMuted) return;
+      // const speak = async (text) => {
+      //   // Jangan bersuara kalau lagi mute
+      //   if (isMuted) return;
 
-        const EL_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
-        const VOICE_ID = import.meta.env.VITE_VOICE_ID;
+      //   const EL_API_KEY = import.meta.env.VITE_ELEVENLABS_API_KEY;
+      //   const VOICE_ID = import.meta.env.VITE_VOICE_ID;
 
-        try {
-          const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'xi-api-key': EL_API_KEY
-            },
-            body: JSON.stringify({
-              text: text,
-              model_id: 'eleven_multilingual_v2', // Model ini paling bagus untuk Bahasa Indonesia
-              voice_settings: {
-                stability: 0.5,
-                similarity_boost: 0.75
-              }
-            })
-          });
+      //   try {
+      //     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+      //       method: 'POST',
+      //       headers: {
+      //         'Content-Type': 'application/json',
+      //         'xi-api-key': EL_API_KEY
+      //       },
+      //       body: JSON.stringify({
+      //         text: text,
+      //         model_id: 'eleven_multilingual_v2', // Model ini paling bagus untuk Bahasa Indonesia
+      //         voice_settings: {
+      //           stability: 0.5,
+      //           similarity_boost: 0.75
+      //         }
+      //       })
+      //     });
 
-          const audioBlob = await response.blob();
-          const audioUrl = URL.createObjectURL(audioBlob);
-          const audio = new Audio(audioUrl);
-          audio.play();
-        } catch (err) {
-          console.error("Gagal memutar suara ElevenLabs:", err);
-        }
-      };
+      //     const audioBlob = await response.blob();
+      //     const audioUrl = URL.createObjectURL(audioBlob);
+      //     const audio = new Audio(audioUrl);
+      //     audio.play();
+      //   } catch (err) {
+      //     console.error("Gagal memutar suara ElevenLabs:", err);
+      //   }
+      // };
       // --- LOGIKA VOICE SELESAI ---
 
       // 1. Tangkap Diary
