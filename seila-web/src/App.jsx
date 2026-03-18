@@ -333,7 +333,7 @@ export default function App() {
               <div className={`w-full h-full flex items-center justify-center p-4 md:p-10 pointer-events-none z-40 transition-opacity duration-500 ${isAnyOverlayOpen ? 'opacity-0' : 'opacity-100'}`}>
                 <div className={`w-full transition-all duration-700 pointer-events-auto ${viewMode === 'chat' ? 'max-w-md h-full flex items-center mt-4' : 'max-w-5xl mt-auto'}`}>
                   {/* PASS PLAYER NAME KE CHATBOX */}
-                  <ChatBox theme={theme} playSound={playSound} viewMode={viewMode} setMoodScore={setMoodScore} setCoins={setCoins} giftEvent={giftEvent} onNewDiaryEntry={handleNewDiaryEntry} playerName={playerName} />
+                  <ChatBox theme={theme} playSound={playSound} viewMode={viewMode} setMoodScore={setMoodScore} setCoins={setCoins} giftEvent={giftEvent} onNewDiaryEntry={handleNewDiaryEntry} playerName={playerName} isMuted={isMuted} />
                 </div>
               </div>
 

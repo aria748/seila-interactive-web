@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 
-export default function ChatBox({ theme, playSound, viewMode, setMoodScore, setCoins, giftEvent, onNewDiaryEntry, playerName }) { 
+export default function ChatBox({ theme, playSound, viewMode, setMoodScore, setCoins, giftEvent, onNewDiaryEntry, playerName, isMuted }) { 
   const [messages, setMessages] = useState([
     { sender: 'Seila Talita', text: `Hai ${playerName}! Kangen ya sama aku? Mau cerita apa hari ini?` }
   ]);
