@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, Shirt, Volume2, VolumeX, Palette, X, Smartphone, Monitor, ArrowLeft, Gamepad2, Sparkles, User, Calendar, Coffee, Music, Paintbrush, Heart, Smile, BookHeart, Lock, Check, ShoppingBag, Coins as CoinIcon, Gift, LayoutGrid } from 'lucide-react';
-import ChatBox from './components/chatbox';
+import ChatBox from './components/ChatBox';
 
 const themeColors = {
   indigo: { bg: 'bg-indigo-600', hover: 'hover:bg-indigo-500', text: 'text-indigo-400', border: 'border-indigo-500/30', borderSolid: 'border-indigo-400', glow: 'shadow-[0_0_30px_rgba(79,70,229,0.6)]' },
