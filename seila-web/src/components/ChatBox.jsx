@@ -142,7 +142,7 @@ Contoh:
       setMessages(prev => [...prev, { sender: 'Seila Talita', text: responseText }]);
       playSound('pop'); 
 
-      speak(responseText);
+      // speak(responseText);
 
     } catch (error) {
       console.error(error);
